@@ -1,0 +1,8 @@
+fastmcp==2.10.1
+httpx==0.28.1
+protobuf==6.31.1
+google-adk==1.8.0
+cloudpickle==3.1.1
+google-cloud-aiplatform==1.105.0
+arize-phoenix-otel==0.12.1
+openinference-instrumentation-google-adk==0.1.1

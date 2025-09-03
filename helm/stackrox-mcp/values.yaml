@@ -1,0 +1,21 @@
+replicaCount: 2
+
+image:
+  repository: quay.io/stackrox-io/mcp
+  tag: latest
+  pullPolicy: Always
+
+env:
+  roxUrl: "https://localhost:8443"
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+route:
+  enabled: true
+  annotations:
+    haproxy.router.openshift.io/balance: source
+
+resources: {}

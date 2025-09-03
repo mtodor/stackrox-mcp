@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stackrox-mcp
+  labels:
+    {{- include "stackrox-mcp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "stackrox-mcp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "stackrox-mcp.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: stackrox-mcp
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          env:
+            - name: ROX_MCP_URL
+              value: {{ .Values.env.roxUrl | quote }}
+            - name: FASTMCP_EXPERIMENTAL_ENABLE_NEW_OPENAPI_PARSER
+              value: "true"
+          volumeMounts:
+            - name: jwt-key
+              mountPath: /tmp/jwt-key.pem
+              subPath: jwt-key.pem
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: jwt-key
+          secret:
+            secretName: central-tls
+            items:
+              - key: jwt-key.pem
+                path: jwt-key.pem

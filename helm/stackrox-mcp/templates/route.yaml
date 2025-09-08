@@ -1,0 +1,18 @@
+{{- if .Values.route.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: stackrox-mcp
+  labels:
+    {{- include "stackrox-mcp.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.route.annotations | nindent 4 }}
+spec:
+  port:
+    targetPort: {{ .Values.service.targetPort }}
+  to:
+    kind: Service
+    name: stackrox-mcp
+    weight: 100
+  wildcardPolicy: None
+{{- end }}

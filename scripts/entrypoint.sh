@@ -4,8 +4,7 @@ set -e
 echo "🔑 Generating JWKS from mounted private key..."
 
 # Generate JWKS from mounted private key
-python scripts/generate_jwks.py --from-existing --private-key /tmp/jwt-key.pem
-mv build/jwks.json ./jwks.json
+python scripts/generate_jwks.py --from-existing --private-key /tmp/jwt-key.pem --output ./jwks.json
 
 echo "🚀 Starting StackRox MCP Server..."
 

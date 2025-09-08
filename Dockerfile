@@ -8,12 +8,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the MCP server code and specs
 COPY src/mcp/ ./src/mcp/
-COPY specs/ ./specs/
-COPY scripts/ ./scripts/
+COPY specs/stackrox-mcp-api-no-refs.json ./specs/
+COPY scripts/entrypoint.sh ./scripts/
+COPY scripts/generate_jwks.py ./scripts/
 
 # Set environment variables with defaults
-ENV MCP_PORT=8000
-ENV MCP_HOST=0.0.0.0
+ENV ROX_MCP_PORT=8000
+ENV ROX_MCP_HOST=0.0.0.0
 ENV ROX_MCP_URL=https://localhost:8443
 ENV ROX_MCP_TOKEN=test
 

@@ -25,8 +25,6 @@ spec:
           env:
             - name: ROX_MCP_URL
               value: {{ .Values.env.roxUrl | quote }}
-            - name: FASTMCP_EXPERIMENTAL_ENABLE_NEW_OPENAPI_PARSER
-              value: "true"
           volumeMounts:
             - name: jwt-key
               mountPath: /tmp/jwt-key.pem
@@ -37,7 +35,7 @@ spec:
       volumes:
         - name: jwt-key
           secret:
-            secretName: central-tls
+            secretName: {{ .Values.auth.jwtSecret.secretName }}
             items:
               - key: jwt-key.pem
                 path: jwt-key.pem

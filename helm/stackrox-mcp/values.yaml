@@ -8,6 +8,10 @@ image:
 env:
   roxUrl: "https://localhost:8443"
 
+auth:
+  jwtSecret:
+    secretName: central-tls
+
 service:
   type: ClusterIP
   port: 8000

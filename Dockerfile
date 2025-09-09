@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the MCP server code and specs
 COPY src/mcp/ ./src/mcp/
-COPY specs/stackrox-mcp-api-no-refs.json ./specs/
+COPY specs/stackrox-api-no-refs-nullable.json ./specs/
 COPY scripts/entrypoint.sh ./scripts/
 COPY scripts/generate_jwks.py ./scripts/
 COPY config/ ./config/

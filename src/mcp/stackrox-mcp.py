@@ -33,7 +33,7 @@ else:
     client = httpx.AsyncClient(base_url=url, verify=False)
 
 # Load your OpenAPI spec from local file
-openapi_spec_path = os.getenv("ROX_MCP_OPENAPI_SPEC", "stackrox-mcp-api-no-refs.json")
+openapi_spec_path = os.getenv("ROX_MCP_OPENAPI_SPEC", "stackrox-api-no-refs-nullable.json")
 openapi_file = Path(__file__).parent / f"../../specs/{openapi_spec_path}"
 openapi_spec = json.loads(openapi_file.read_text())
 

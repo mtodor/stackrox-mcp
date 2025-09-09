@@ -95,7 +95,14 @@ mcp = FastMCP.from_openapi(
 @mcp.custom_route("/jwks.json", methods=["GET"])
 async def get_jwks(request):
     """Serve JWKS file for JWT verification."""
-    jwks_file = Path(__file__).parent / "../../jwks.json"
+    jwks_path = os.getenv("ROX_MCP_JWKS_FILE", "jwks.json")
+
+    # Try absolute path first, then relative to project root
+    if os.path.isabs(jwks_path):
+        jwks_file = Path(jwks_path)
+    else:
+        jwks_file = Path(__file__).parent / f"../../{jwks_path}"
+
     if jwks_file.exists():
         return JSONResponse(content=json.loads(jwks_file.read_text()))
     return JSONResponse(content={"keys": []})

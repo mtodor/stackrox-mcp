@@ -11,6 +11,7 @@ COPY src/mcp/ ./src/mcp/
 COPY specs/stackrox-mcp-api-no-refs.json ./specs/
 COPY scripts/entrypoint.sh ./scripts/
 COPY scripts/generate_jwks.py ./scripts/
+COPY config/ ./config/
 
 # Set environment variables with defaults
 ENV ROX_MCP_PORT=8000

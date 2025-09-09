@@ -1,0 +1,44 @@
+routes:
+  - methods: ["GET"]
+    pattern: "^/v1/alerts$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/alerts/{id}$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/clusters$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/cve/requests.*"
+    mcp_type: "TOOL"
+
+  - methods: ["POST"]
+    pattern: "^/v1/cve/requests.*"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/deployments$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/namespaces$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/deploymentswithrisk/{id}$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/policies$"
+    mcp_type: "TOOL"
+
+  - methods: ["GET"]
+    pattern: "^/v1/policies/{id}$"
+    mcp_type: "TOOL"
+
+  - methods: ["POST", "PUT"]
+    pattern: "^/v1/policies$|^/v1/policies/{id}$"
+    mcp_type: "TOOL"

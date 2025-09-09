@@ -7,3 +7,5 @@ google-cloud-aiplatform==1.105.0
 arize-phoenix-otel==0.12.1
 openinference-instrumentation-google-adk==0.1.1
 PyJWT==2.10.1
+pyyaml>=6.0
+cryptography>=41.0.0

@@ -17,7 +17,6 @@ COPY config/ ./config/
 ENV ROX_MCP_PORT=8000
 ENV ROX_MCP_HOST=0.0.0.0
 ENV ROX_MCP_URL=https://localhost:8443
-ENV ROX_MCP_TOKEN=test
 
 # Set FastMCP experimentation flag
 ENV FASTMCP_EXPERIMENTAL_ENABLE_NEW_OPENAPI_PARSER=true

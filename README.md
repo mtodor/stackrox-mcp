@@ -4,7 +4,7 @@ Model Context Protocol (MCP) implementation for StackRox security platform. This
 
 **NOTES**
 
-- Using of ADK is not recently test. There could be breaking changes.
+- Use of ADK has not been recently tested. There could be breaking changes.
 
 ## Prerequisites
 
@@ -68,6 +68,16 @@ helm upgrade --install stackrox-mcp helm/stackrox-mcp \
    - Use command: `/mcp` to check list of MCPs and their tools
    - Ask: "Can you list all clusters?" or "Show me the security policies"
    - Claude should now have access to StackRox APIs through the MCP server
+
+### Available Commands
+
+Once integrated, Claude can:
+- List and analyze security alerts
+- View and manage security policies
+- Check deployment vulnerabilities
+- Review CVE deferral requests
+- Examine cluster and namespace information
+- Provide security recommendations based on StackRox data
 
 ### Local Development
 

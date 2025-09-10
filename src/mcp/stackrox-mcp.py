@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import yaml
 from pathlib import Path
 
 import httpx
@@ -32,9 +33,46 @@ else:
     client = httpx.AsyncClient(base_url=url, verify=False)
 
 # Load your OpenAPI spec from local file
-openapi_spec_path = os.getenv("ROX_MCP_OPENAPI_SPEC", "stackrox-mcp-api-no-refs.json")
+openapi_spec_path = os.getenv("ROX_MCP_OPENAPI_SPEC", "stackrox-api-no-refs-nullable.json")
 openapi_file = Path(__file__).parent / f"../../specs/{openapi_spec_path}"
 openapi_spec = json.loads(openapi_file.read_text())
+
+# Load route configuration
+def load_route_config():
+    """Load route configuration from YAML file."""
+    config_path = os.getenv("ROX_MCP_ROUTES_CONFIG", "config/routes.yaml")
+
+    # Try absolute path first, then relative to project root
+    if os.path.isabs(config_path):
+        config_file = Path(config_path)
+    else:
+        config_file = Path(__file__).parent / f"../../{config_path}"
+
+    if not config_file.exists():
+        logging.warning(f"Route config file not found: {config_file}")
+        return []
+
+    try:
+        with open(config_file, 'r') as f:
+            config = yaml.safe_load(f)
+
+        route_maps = []
+        for route in config.get('routes', []):
+            route_maps.append(RouteMap(
+                methods=route['methods'],
+                pattern=route['pattern'],
+                mcp_type=getattr(MCPType, route['mcp_type'])
+            ))
+
+        # Add exclude all remaining routes
+        route_maps.append(RouteMap(mcp_type=MCPType.EXCLUDE))
+
+        logging.info(f"Loaded {len(route_maps)-1} routes from {config_file}")
+        return route_maps
+
+    except Exception as e:
+        logging.error(f"Error loading route config: {e}")
+        return []
 
 # Configure JWT authentication
 jwks_uri = os.getenv("ROX_MCP_JWT_JWKS_URI", "http://localhost:8000/jwks.json")
@@ -49,65 +87,7 @@ mcp = FastMCP.from_openapi(
     client=client,
     name="StackRox MCP Server",
     auth=auth,
-    route_maps=[
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/alerts$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/alerts/{id}$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/clusters$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/cve/requests.*",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["POST"],
-            pattern=r"^/v1/cve/requests.*",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/deployments$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/namespaces$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/deploymentswithrisk/{id}$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/policies$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["GET"],
-            pattern=r"^/v1/policies/{id}$",
-            mcp_type=MCPType.TOOL,
-        ),
-        RouteMap(
-            methods=["POST", "PUT"],
-            pattern=r"^/v1/policies$|^/v1/policies/{id}$",
-            mcp_type=MCPType.TOOL,
-        ),
-        # Exclude all remaining routes
-        RouteMap(mcp_type=MCPType.EXCLUDE),
-    ],
+    route_maps=load_route_config(),
 )
 
 
@@ -115,7 +95,14 @@ mcp = FastMCP.from_openapi(
 @mcp.custom_route("/jwks.json", methods=["GET"])
 async def get_jwks(request):
     """Serve JWKS file for JWT verification."""
-    jwks_file = Path(__file__).parent / "../../jwks.json"
+    jwks_path = os.getenv("ROX_MCP_JWKS_FILE", "jwks.json")
+
+    # Try absolute path first, then relative to project root
+    if os.path.isabs(jwks_path):
+        jwks_file = Path(jwks_path)
+    else:
+        jwks_file = Path(__file__).parent / f"../../{jwks_path}"
+
     if jwks_file.exists():
         return JSONResponse(content=json.loads(jwks_file.read_text()))
     return JSONResponse(content={"keys": []})

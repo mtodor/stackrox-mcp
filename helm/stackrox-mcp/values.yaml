@@ -12,6 +12,11 @@ auth:
   jwtSecret:
     secretName: central-tls
 
+customRoutes:
+  enabled: false
+  routes:
+    routes: []
+
 service:
   type: ClusterIP
   port: 8000

@@ -1,0 +1,11 @@
+{{- if .Values.customRoutes.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stackrox-mcp-routes
+  labels:
+    {{- include "stackrox-mcp.labels" . | nindent 4 }}
+data:
+  routes.yaml: |
+    {{- toYaml .Values.customRoutes.routes | nindent 4 }}
+{{- end }}

@@ -59,3 +59,6 @@ test_*
 # Development tools
 tools/adk/Dockerfile
 tools/adk/.dockerignore
+
+# Dev files
+jwt-private-key.pem

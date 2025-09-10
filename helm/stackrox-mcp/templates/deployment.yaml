@@ -25,11 +25,20 @@ spec:
           env:
             - name: ROX_MCP_URL
               value: {{ .Values.env.roxUrl | quote }}
+            {{- if .Values.customRoutes.enabled }}
+            - name: ROX_MCP_ROUTES_CONFIG
+              value: /etc/stackrox-mcp/routes.yaml
+            {{- end }}
           volumeMounts:
             - name: jwt-key
               mountPath: /tmp/jwt-key.pem
               subPath: jwt-key.pem
               readOnly: true
+            {{- if .Values.customRoutes.enabled }}
+            - name: routes-config
+              mountPath: /etc/stackrox-mcp
+              readOnly: true
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -39,3 +48,8 @@ spec:
             items:
               - key: jwt-key.pem
                 path: jwt-key.pem
+        {{- if .Values.customRoutes.enabled }}
+        - name: routes-config
+          configMap:
+            name: stackrox-mcp-routes
+        {{- end }}

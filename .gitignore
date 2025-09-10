@@ -23,3 +23,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Dev files
+jwt-private-key.pem
